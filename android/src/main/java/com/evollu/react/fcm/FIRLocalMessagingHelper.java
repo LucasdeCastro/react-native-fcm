@@ -198,7 +198,7 @@ public class FIRLocalMessagingHelper {
                 for (String action : actions.keySet()) {
 
                     Bundle bn = new Bundle();
-                    bn.putString("action", actions.get(action));
+                    bn.putString("action", actions.getBundle(action));
                     bn.putBundle("data", bundle);
 
                     Intent intent = new Intent(mContext, intentClass);
