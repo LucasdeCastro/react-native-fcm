@@ -18,7 +18,9 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "Remote message received");
+
         Intent i = new Intent("com.evollu.react.fcm.ReceiveNotification");
+
         i.putExtra("data", remoteMessage);
         handleBadge(remoteMessage);
         buildLocalNotification(remoteMessage);
@@ -56,7 +58,7 @@ public class MessagingService extends FirebaseMessagingService {
                 FIRLocalMessagingHelper helper = new FIRLocalMessagingHelper(this.getApplication());
                 helper.sendNotification(bundle);
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e("E", "FCM" + e.getMessage());
             }
 
         }

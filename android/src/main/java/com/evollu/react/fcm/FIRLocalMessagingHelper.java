@@ -188,8 +188,42 @@ public class FIRLocalMessagingHelper {
 
             Log.d(TAG, "broadcast intent before showing notification");
             Intent i = new Intent("com.evollu.react.fcm.ReceiveLocalNotification");
+
             i.putExtras(bundle);
             mContext.sendOrderedBroadcast(i, null);
+
+            Bundle actions = bundle.getBundle("actions");
+
+            if(actions != null) {
+                for (String action : actions.keySet()) {
+
+                    Bundle bn = new Bundle();
+                    bn.putString("action", actions.get(action));
+                    bn.putBundle("data", bundle);
+
+                    Intent intent = new Intent(mContext, intentClass);
+                    intent.putExtras(bn);
+                    intent.setAction(bundle.getString("click_action"));
+
+                    int notificationID = bundle.containsKey("id")
+                        ? bundle.getString("id", "").hashCode()
+                        : (int) System.currentTimeMillis();
+
+                    PendingIntent pendingIntent = PendingIntent.getActivity(
+                        mContext,
+                        notificationID,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    notification.addAction(
+                        android.R.drawable.alert_dark_frame,
+                        action,
+                        pendingIntent
+                    );
+                }
+            }
 
             if(!mIsForeground || bundle.getBoolean("show_in_foreground")){
                 Intent intent = new Intent();
